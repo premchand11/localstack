@@ -1,0 +1,123 @@
+# Local AWS resources.
+# Edit this file, then run: make up
+#
+# Supported: buckets, queues, topics, tables, secrets,
+#            event_buses, event_rules, lambdas, kinesis_streams
+#
+# --- S3 ---
+# buckets:
+#   - name: my-bucket
+#     env: MY_BUCKET_NAME
+#
+# --- SQS ---
+# queues:
+#   - name: my-queue
+#     env: MY_QUEUE_URL
+#
+# --- SNS ---
+# topics:
+#   - name: my-topic
+#     env: MY_TOPIC_ARN
+#
+# --- DynamoDB ---
+# tables:
+#   - name: my-table
+#     env: MY_TABLE_NAME
+#     hash_key: id
+#     hash_key_type: S
+#
+# --- Secrets Manager ---
+# secrets:
+#   - name: my/app/config
+#     env: MY_SECRET_ID
+#     value: '{"KEY":"local-value"}'
+#
+# --- EventBridge bus ---
+# event_buses:
+#   - name: app-events
+#     env: EVENT_BUS_NAME
+#
+# --- EventBridge rule (sends matching events to an SQS queue) ---
+# event_rules:
+#   - name: route-uploads
+#     bus: app-events              # or "default"
+#     pattern: '{"source":["app.uploads"]}'
+#     target_queue: my-queue
+#     env: MY_RULE_NAME
+#
+# --- Lambda ---
+# Put code under source/ (e.g. lambdas/my-fn/handler.js exporting handler).
+# lambdas:
+#   - name: my-fn
+#     runtime: nodejs18.x
+#     handler: handler.handler
+#     source: lambdas/my-fn
+#     memory: 256
+#     timeout: 30
+#     queue: my-queue              # optional SQS event source
+#     env: MY_FUNCTION_NAME
+#
+# --- Kinesis ---
+# kinesis_streams:
+#   - name: my-stream
+#     shards: 1
+#     env: MY_STREAM_NAME
+#
+# Active examples below (DAT upload). Change for your app.
+
+region: ap-south-1
+
+buckets:
+  - name: dat-uploads
+    env: DATFILE_UPLOAD_S3_BUCKET
+
+queues:
+  - name: dat-processing
+    env: DATFILE_UPLOAD_VALIDATION_QUEUE_URL
+
+  - name: dat-processing-submission
+    env: DATFILE_UPLOAD_SUBMISSION_QUEUE_URL
+
+  - name: dat-processing-report
+    env: DATFILE_UPLOAD_REPORT_QUEUE_URL
+
+topics:
+  # - name: my-events
+  #   env: MY_TOPIC_ARN
+
+tables:
+  # - name: my-table
+  #   env: MY_TABLE_NAME
+  #   hash_key: id
+  #   hash_key_type: S
+
+secrets:
+  # - name: my/app/config
+  #   env: MY_SECRET_ID
+  #   value: '{"DATABASE_URL":"mongodb://localhost:27017/app"}'
+
+event_buses:
+  # - name: app-events
+  #   env: EVENT_BUS_NAME
+
+event_rules:
+  # - name: route-to-processing
+  #   bus: default
+  #   pattern: '{"source":["app.uploads"]}'
+  #   target_queue: dat-processing
+  #   env: UPLOAD_RULE_NAME
+
+lambdas:
+  # - name: example-fn
+  #   runtime: nodejs18.x
+  #   handler: handler.handler
+  #   source: lambdas/example-fn
+  #   memory: 256
+  #   timeout: 30
+  #   queue: dat-processing
+  #   env: EXAMPLE_FUNCTION_NAME
+
+kinesis_streams:
+  # - name: my-stream
+  #   shards: 1
+  #   env: MY_STREAM_NAME
